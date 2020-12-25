@@ -4,29 +4,57 @@
 #include <string>
 #include <vector>
 
+#include "linux_parser.h"
 #include "process.h"
+
+
 
 using std::string;
 using std::to_string;
 using std::vector;
 
-// TODO: Return this process's ID
-int Process::Pid() { return 0; }
+// Done: Return this process's ID
+int Process::Pid() { return this->PID_; } 
 
-// TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { return 0; }
+// DONE: Return this process's CPU utilization
+float Process::CpuUtilization() { 
+    this->data_ = LinuxParser::ProcessUtilization(this->PID_);
+    this->utime_ = this->data_[0];
+    this->stime_ = this->data_[1];
+    this->cutime_ = this->data_[2];
+    this->cstime_=this->data_[3];
+    this->starttime_ =this->data_[4];
+    // calculation could be also factorized to not use seconds
+    // as % is unitless
+    // child processes also considered 
+    this->total_time_ = (this->utime_ + this->stime_+ this->cstime_)/sysconf(_SC_CLK_TCK);
+    // possible imporvement to use parent class variable access?
+    this -> duration_ =  LinuxParser::UpTime() - this->UpTime();  // to use latest values
+    this->CpuUsage_ = this->total_time_ / this->duration_;
 
-// TODO: Return the command that generated this process
-string Process::Command() { return string(); }
+    return this->CpuUsage_; }
 
-// TODO: Return this process's memory utilization
-string Process::Ram() { return string(); }
+// Done: Return the command that generated this process
+string Process::Command() { 
+    this->Command_ = LinuxParser::Command(this->PID_);
+    return this->Command_; }
 
-// TODO: Return the user (name) that generated this process
-string Process::User() { return string(); }
+// Done: Return this process's memory utilization
+string Process::Ram() { 
+    this->RAMUsage_ = LinuxParser::Ram(this->PID_);
+    return to_string(this->RAMUsage_); }
 
-// TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return 0; }
+// Done: Return the user (name) that generated this process
+string Process::User() { 
+    this->UserID_ = LinuxParser::Uid(this->PID_);
+    this->UserName_ = LinuxParser::User(this->UserID_);
+    return this->UserName_; }
+
+// Done: Return the age of this process (in seconds)
+long int Process::UpTime() {
+    this ->Uptime_ = LinuxParser::UpTime(this->PID_);
+    this ->Uptime_ = this->Uptime_ / sysconf(_SC_CLK_TCK); // devided by clock ticks
+     return this->Uptime_; }
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
