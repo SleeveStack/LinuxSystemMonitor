@@ -24,14 +24,16 @@ class System {
   //TODO function to lookup if the found process already in the list
   // goal is to add only unique processes in the next executions
   // might be more calculation expensive than to create new list
-  // decision to be made
-  bool lookup(std::vector<Process>& Ps, int PID); 
+  // for sorting purpose, better to have a lookup function
+  bool lookup(int pid); 
+  void sorting();
   Processor cpu_ = {};
   long int uptime_;
   std::vector<Process> processes_ = {};
   std::string Kernel_ {"error"};
   std::string OS_ {"error"};
   float MemUtilization_ {-1}; // init with error value
+  int RunningPIDs_ {-1};
   int totalPID_{-1}; // in case not updated;
   bool sync {false}; // since user can call total processes before calling running processes or vice-versa;
 };

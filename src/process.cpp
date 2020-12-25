@@ -13,6 +13,16 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+//constructo
+Process::Process(int PID) : PID_(PID) {
+    // values set at init and updated at call
+    this->User();
+    this->Ram();
+    this->UpTime();
+    this->CpuUtilization();
+
+}
+
 // Done: Return this process's ID
 int Process::Pid() { return this->PID_; } 
 
@@ -56,6 +66,17 @@ long int Process::UpTime() {
     this ->Uptime_ = this->Uptime_ / sysconf(_SC_CLK_TCK); // devided by clock ticks
      return this->Uptime_; }
 
-// TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a[[maybe_unused]]) const { return true; }
+float Process::getCPUUsage() const{ // getter function for comparison purpose
+    return this->CpuUsage_; }
+// Done: Overload the "less than" comparison operator for Process objects
+// why access to private members was possible here?
+bool Process::operator<(Process const& a) const { 
+
+    if (this->CpuUsage_ < a.getCPUUsage())  return true;
+    else return false;
+     }
+bool Process::operator>(Process const& a) const {  
+
+    if (this->CpuUsage_ > a.getCPUUsage())  return true;
+    else return false;
+     }
