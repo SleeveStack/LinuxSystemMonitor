@@ -28,20 +28,17 @@ int Process::Pid() { return this->PID_; }
 
 // DONE: Return this process's CPU utilization
 float Process::CpuUtilization() { 
-    this->data_ = LinuxParser::ProcessUtilization(this->PID_);
-    this->utime_ = this->data_[0];
-    this->stime_ = this->data_[1];
-    this->cutime_ = this->data_[2];
-    this->cstime_=this->data_[3];
-    this->starttime_ =this->data_[4];
+    std::vector<long> data_ = LinuxParser::ProcessUtilization(this->PID_);
+    long utime_ = data_[0]; // amount of time scheduled in user mode in clock ticks
+    long stime_ = data_[1];//amount of time schedule in kernel mode in clock ticks
+    long cstime_=data_[3]; // amount of time waited for childrnen in kernel mode
+
     // calculation could be also factorized to not use seconds
     // as % is unitless
     // child processes also considered 
-    this->total_time_ = (this->utime_ + this->stime_+ this->cstime_)/sysconf(_SC_CLK_TCK);
-    // possible imporvement to use parent class variable access?
-    this -> duration_ =  LinuxParser::UpTime() - this->UpTime();  // to use latest values
-    this->CpuUsage_ = this->total_time_ / this->duration_;
-
+    this->total_time_ = (utime_ + stime_+ cstime_)/sysconf(_SC_CLK_TCK);
+    this -> duration_ = this->Uptime_ ;  // to use latest values
+    this->CpuUsage_ = static_cast<float> (this->total_time_ / this->duration_);
     return this->CpuUsage_; }
 
 // Done: Return the command that generated this process
@@ -63,8 +60,8 @@ string Process::User() {
 // Done: Return the age of this process (in seconds)
 long int Process::UpTime() {
     this ->Uptime_ = LinuxParser::UpTime(this->PID_);
-    this ->Uptime_ = this->Uptime_ / sysconf(_SC_CLK_TCK); // devided by clock ticks
-     return this->Uptime_; }
+    //this ->Uptime_ = this->Uptime_; // devided by clock ticks
+     return static_cast<long int >(this->Uptime_); }
 
 float Process::getCPUUsage() const{ // getter function for comparison purpose
     return this->CpuUsage_; }

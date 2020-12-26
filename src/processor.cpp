@@ -1,7 +1,7 @@
 #include "processor.h"
 #include "linux_parser.h"
 #include <vector>
-// TODO: Return the aggregate CPU utilization
+// Return the aggregate CPU utilization
 float Processor::Utilization() { 
     std::vector<long> ProcessorsData = LinuxParser::CpuUtilization();
     this->user_ = ProcessorsData[0];
@@ -14,7 +14,6 @@ float Processor::Utilization() {
     this->steal_ = ProcessorsData[7];
     this->guest_=ProcessorsData[8];
     this->guest_nice_ = ProcessorsData[9];
-    
     // total utilization calculation
     this->currentIdle_time_ = this->idle_ + this->iowait_;
     this->currentNoneIdle_time_ = this->user_ + this->nice_ + this->system_ + this->irq_ + this->softirq_ + this-> steal_ + this->guest_ + this->guest_nice_;
@@ -27,10 +26,8 @@ float Processor::Utilization() {
      this->utilization_ =  ((float)(this->idledifference_) /(float)this->totaldifference_); // error fix of utilization always = 0 by casting
     }
     if (this->execution_counter == 0) {
-        
         this->utilization_ = -1; // not knowen yet
          this->execution_counter++;
-
     }
     this->prevIdle_time_ = this->currentIdle_time_;
     this ->prevNoneIdle_time_ = this->currentNoneIdle_time_;

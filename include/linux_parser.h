@@ -54,7 +54,7 @@ std::string Command(int pid);
 long Ram(int pid); // return type changed from string to long
 std::string Uid(int pid);
 std::string User(std::string Uid);
-long int UpTime(int pid);
+float UpTime(int pid);
 
 };  // namespace LinuxParser
 

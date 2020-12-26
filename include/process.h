@@ -24,18 +24,11 @@ class Process {
   // Done: Declare any necessary private members
  private:
  int PID_ {0}; // the ID of the instantiated processor
- std::vector<long> data_;
  std::string UserID_;
  std::string UserName_;
  std::string Command_;
  long RAMUsage_;
- long int Uptime_; // in seconds
- long utime_; // amount of time scheduled in user mode in clock ticks
- long stime_; //amount of time schedule in kernel mode in clock ticks
- long cutime_; // amount of time waited for children in used mode
- long cstime_; // amount of time waited for childrnen in kernel mode
- // this is same as uptime only different unit, can be deleted
- long starttime_; // time processor started after system boot in jiffies or clock ticks depending on linux version 
+ float Uptime_; // in seconds
  long total_time_;
  float duration_;
  float CpuUsage_;
